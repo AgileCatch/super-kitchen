@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">super-kitchen</string>
+
+    <!-- 알림 -->
+    <string name="string_common_alert">알림</string>
+    <string name="string_common_confirm">확인</string>
+    <string name="string_common_cancel">취소</string>
+    <string name="string_common_picture_select">사진을 선택하세요</string>
+    <string name="string_common_call">전화를 연결 할까요?</string>
+    <string name="string_common_out">종료 하시겠습니까?</string>
+    <string name="string_common_network">네트워크에 연결되어 있지않습니다.</string>
+    <string name="string_common_out_link">외부연결 사이트 입니다. \n 브라우져로 실행하시겠습니까?</string>
+
+    <string name="string_common_media_alert">앱 필수 접근 권한\n허용 후  이용 가능합니다.\n(휴대폰설정>어플리케이션> SCMS>권한)</string>
+    <string name="string_common_camera_alert">"설정 > 어플리케이션 > SCMS > 권한" 에서 카메라 접근 권한을 수락해 주세요.</string>
+
+    >
 </resources>
