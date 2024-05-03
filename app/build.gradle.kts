@@ -63,4 +63,7 @@ dependencies {
 
     //Barcode scanner
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+
+    //Permission
+    implementation("io.github.ParkSangGwon:tedpermission-normal:3.3.0")
 }
