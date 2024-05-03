@@ -8,10 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.focusone.super_kitchen.databinding.ActivityMainBinding
 import com.google.zxing.client.android.BuildConfig
 
-class MainActivity : AppCompatActivity(), WebViewCallback {
+class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private lateinit var fileUploadCallback: ValueCallback<Array<Uri>>
+    private lateinit var backPressedForFinish: BackPressedForFinish
     private lateinit var mWebView: BaseWebView
 
     companion object {
@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity(), WebViewCallback {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        backPressedForFinish = BackPressedForFinish(this)
+
         initView()
 
     }
@@ -38,28 +40,6 @@ class MainActivity : AppCompatActivity(), WebViewCallback {
         mWebView = binding.mainWebView
         mainWebView.loadUrl(baseUrl)
         Log.d(TAG, "MAIN_URL: ${com.focusone.super_kitchen.BuildConfig.MAIN_URL}")
-    }
-
-    override fun onPageStarted(url: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onPageFinished(url: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onError(url: String, errorCode: Int, description: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onDownloadRequested(
-        url: String,
-        userAgent: String,
-        contentDisposition: String,
-        mimetype: String,
-        contentLength: Long
-    ) {
-        TODO("Not yet implemented")
     }
 
 }

@@ -28,15 +28,12 @@ import com.journeyapps.barcodescanner.ScanOptions
 import java.net.URISyntaxException
 
 class BaseWebView : WebView {
-    private var callback: WebViewCallback? = null // MainActivity와의 통신을 위한 콜백 인터페이스
 
     companion object {
         private const val TAG = "BaseWebView"
     }
 
     private var mContext: Context? = null
-    private var mCallMethod: String = ""
-    private var downloadId: Long = 0
 
     constructor(context: Context) : super(context) {
         mContext = context
