@@ -58,6 +58,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    //webView
+    //WebView
     implementation("androidx.webkit:webkit:1.11.0")
+
+    //Barcode scanner
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
 }
