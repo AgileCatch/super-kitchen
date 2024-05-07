@@ -1,7 +1,7 @@
 package com.focusone.super_kitchen
 
-import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Message
 import android.util.AttributeSet
 import android.util.Log
+import android.view.View
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.JsResult
@@ -27,25 +28,9 @@ import java.net.URISyntaxException
 
 open class BaseWebView : WebView {
     companion object {
-
         private const val TAG = "BaseWebView"
         var mContext: Context? = null
         var mCallMethod = ""
-
-        val UPLOAD_PERMISSIONS =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arrayOf(
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.READ_MEDIA_VIDEO,
-                    Manifest.permission.CAMERA,
-                )
-            } else {
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA
-                )
-            }
 
     }
 
@@ -106,7 +91,7 @@ open class BaseWebView : WebView {
     }
 
 
-    private inner class MyWebViewClient: WebViewClient() {
+    private inner class MyWebViewClient : WebViewClient() {
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
             Log.e(TAG, "shouldOverrideUrlLoading : $url")
             try {
@@ -281,21 +266,17 @@ open class BaseWebView : WebView {
             window.goBack()
         }
 
+
+        //웹뷰 alert 네이티브 팝업처리
         override fun onJsAlert(
             view: WebView?,
             url: String?,
             message: String?,
             result: JsResult
         ): Boolean {
-            message?.let {
-                mContext?.let { it1 ->
-                    CustomAlert(
-                        it1, it, "확인",
-                        DialogInterface.OnClickListener { dialog, which ->
-                            result.confirm() // 확인
-                        })
-                }
-            }?.show()
+            val myAlert = CustomAlert(
+                mContext!!, message!!, "확인", { dialog, which -> result.confirm() })
+            myAlert.show()
             return true
         }
 
@@ -305,44 +286,53 @@ open class BaseWebView : WebView {
             message: String?,
             result: JsResult
         ): Boolean {
-            val myAlert = mContext?.let {
-                message?.let { it1 ->
-                    CustomAlert(
-                        it, it1, "확인", "취소",
-                        { dialog, which ->
-                            result.confirm() // 확인
-                        }, { dialog, which ->
-                            result.cancel() // 취소
-                        })
-                }
-            }
-            myAlert?.show()
+            val myAlert = CustomAlert(
+                mContext!!, message!!, "확인", "취소",
+                { dialog, which ->
+                    result.confirm() // 확인
+                }, { dialog, which ->
+                    result.cancel() // 취소
+                })
+            myAlert.show()
             return true
         }
 
+        fun openFileChooser(uploadMsg: ValueCallback<Uri?>?) {
+            (mContext as MainActivity).doFileAttach(uploadMsg!!)
+            Log.d(TAG, "openFileChooser")
+        }
+
+        // 4.1
+        @Suppress("unused")
+        fun openFileChooser(uploadMsg: ValueCallback<Uri?>?, acceptType: String?) {
+            openFileChooser(uploadMsg)
+        }
+
+        // 4.4
+        @Suppress("unused")
+        fun openFileChooser(
+            uploadMsg: ValueCallback<Uri?>?,
+            acceptType: String?,
+            capture: String?
+        ) {
+            openFileChooser(uploadMsg)
+        }
+
+        // 5.0 이후, Build Sdk를 5.0 이상을 적용해야함.
         override fun onShowFileChooser(
-            webView: WebView?,
-            filePathCallback: ValueCallback<Array<Uri>>?,
+            webView: WebView?, filePathCallback: ValueCallback<Array<Uri>>?,
             fileChooserParams: FileChooserParams?
         ): Boolean {
-            return super.onShowFileChooser(webView, filePathCallback, fileChooserParams)
-            Log.d(TAG, "onShowFileChooser called!!!")
-
-            val chooserIntent = createChooserIntent()
-            context.startActivity(chooserIntent)
+            (mContext as MainActivity).doFileAttachs(filePathCallback)
+            return true
         }
 
+        override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
+            super.onShowCustomView(view, callback)
+            Log.d(TAG, "onShowCustomView()")
+        }
     }
 
-    private fun createChooserIntent(): Intent {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "*/*"
-            val mimeTypes = arrayOf("image/*", "application/pdf")
-            putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-        }
-        return Intent.createChooser(intent, "첨부파일 선택")
-    }
 
     private fun setUserAgent(settings: WebSettings?) {
         if (settings == null || mContext == null) return
@@ -359,8 +349,28 @@ open class BaseWebView : WebView {
         }
     }
 
+    fun normalConfirmDlg(
+        msg: String?,
+        title: String?,
+        positiveBtnName: String?,
+        positiveListener: DialogInterface.OnClickListener?,
+        negativeBtnName: String?,
+        negativeListener: DialogInterface.OnClickListener?
+    ) {
+        val builder = AlertDialog.Builder(
+            mContext,
+            android.R.style.Theme_DeviceDefault_Light_Dialog
+        )
+        builder.setMessage(msg)
+            .setTitle(title)
+            .setPositiveButton(positiveBtnName, positiveListener)
+            .setNegativeButton(negativeBtnName, negativeListener)
+            .setCancelable(false) // 백버튼으로 팝업창이 닫히지 않도록 한다.
+            .show()
+    }
+
     //바코드기능
-    private class AndroidScriptBridge internal constructor(webview: BaseWebView) {
+    private class AndroidScriptBridge(webview: BaseWebView) {
         //private final Handler handler = new Handler();
         var mWebview: BaseWebView
 
