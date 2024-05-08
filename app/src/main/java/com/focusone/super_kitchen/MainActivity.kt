@@ -234,7 +234,7 @@ open class MainActivity : AppCompatActivity() {
 
     private fun permissionMedia() {
         TedPermission.create()
-            .setRationaleMessage("이 기능을 사용하기 위해서는 권한 허용이 필요합니다.")
+            .setRationaleMessage(R.string.string_common_permission)
             .setDeniedMessage(R.string.string_common_media_alert)
             .setPermissions(*UPLOAD_PERMISSIONS)
             .setPermissionListener(object : PermissionListener {
@@ -256,7 +256,7 @@ open class MainActivity : AppCompatActivity() {
 
     private fun permissionCamera() {
         TedPermission.create()
-            .setRationaleMessage("이 기능을 사용하기 위해서는 권한 허용이 필요합니다.")
+            .setRationaleMessage(R.string.string_common_permission)
             .setDeniedMessage(R.string.string_common_camera_alert)
             .setPermissions(Manifest.permission.CAMERA)
             .setPermissionListener(object : PermissionListener {

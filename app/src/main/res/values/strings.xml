@@ -11,6 +11,7 @@
     <string name="string_common_network">네트워크에 연결되어 있지않습니다.</string>
     <string name="string_common_out_link">외부연결 사이트 입니다. \n 브라우져로 실행하시겠습니까?</string>
 
+    <string name="string_common_permission">"이 기능을 사용하기 위해서는 권한 허용이 필요합니다."</string>
     <string name="string_common_media_alert">앱 필수 접근 권한\n허용 후  이용 가능합니다.\n(휴대폰설정>어플리케이션> SCMS>권한)</string>
     <string name="string_common_camera_alert">"설정 > 어플리케이션 > SCMS > 권한" 에서 카메라 접근 권한을 수락해 주세요.</string>
 
