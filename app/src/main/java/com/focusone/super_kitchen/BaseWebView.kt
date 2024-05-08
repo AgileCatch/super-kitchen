@@ -21,12 +21,11 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import com.focusone.super_kitchen.util.CustomAlert
 import com.journeyapps.barcodescanner.ScanOptions
 import java.net.URISyntaxException
 
 open class BaseWebView : WebView {
-//    var mCallMethod = ""
-
     companion object {
         private const val TAG = "BaseWebView"
         var mContext: Context? = null
@@ -75,6 +74,7 @@ open class BaseWebView : WebView {
 
             // https -> http 호출 허용
             mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+
             // 시스템 텍스트 크기 무시
             textZoom = 100
 
@@ -96,8 +96,24 @@ open class BaseWebView : WebView {
 
     }
 
+    private fun setUserAgent(settings: WebSettings?) {
+        if (settings == null || mContext == null) return
+        try {
+            val pm = mContext!!.packageManager
+            val deviceVersion = pm.getPackageInfo(mContext!!.packageName, 0).versionName
+            val deviceModelName = Build.MODEL
+            //String deviceModelName = android.os.Build.BRAND  + android.os.Build.MODEL;
+
+            // UserAgent를 설정한다.
+            settings.userAgentString += " [SKApp/Android]"
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+    }
+
 
     private inner class MyWebViewClient : WebViewClient() {
+        @Deprecated("Deprecated in Java")
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
             Log.e(TAG, "shouldOverrideUrlLoading : $url")
             try {
@@ -204,6 +220,7 @@ open class BaseWebView : WebView {
             return true
         }
 
+        //페이지 로딩 시작
         override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
             Log.e(TAG, "onPageStarted URL : $url")
@@ -214,6 +231,8 @@ open class BaseWebView : WebView {
             }
         }
 
+        //오류 처리
+        @Deprecated("Deprecated in Java")
         override fun onReceivedError(
             view: WebView,
             errorCode: Int,
@@ -226,6 +245,7 @@ open class BaseWebView : WebView {
             //loadUrl(URL_ERROR);
         }
 
+        //페이지 로딩 완료
         override fun onPageFinished(view: WebView, url: String) {
             super.onPageFinished(view, url)
             Log.e(TAG, "onPageFinished : $url")
@@ -302,6 +322,7 @@ open class BaseWebView : WebView {
             return true
         }
 
+        //파일 업로드 관련 이벤트 처리
         fun openFileChooser(uploadMsg: ValueCallback<Uri?>?) {
             (mContext as MainActivity).doFileAttach(uploadMsg!!)
             Log.d(TAG, "openFileChooser")
@@ -339,32 +360,15 @@ open class BaseWebView : WebView {
     }
 
 
-    private fun setUserAgent(settings: WebSettings?) {
-        if (settings == null || mContext == null) return
-        try {
-            val pm = mContext!!.packageManager
-            val deviceVersion = pm.getPackageInfo(mContext!!.packageName, 0).versionName
-            val deviceModelName = Build.MODEL
-            //String deviceModelName = android.os.Build.BRAND  + android.os.Build.MODEL;
-
-            // UserAgent를 설정한다.
-            settings.setUserAgentString(settings.userAgentString + " [SKApp/Android]")
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        }
-    }
-
-
-    //바코드기능
-    private class AndroidScriptBridge(webview: BaseWebView) {
+    //바코드 기능
+    private class AndroidScriptBridge(webView: BaseWebView) {
         //private final Handler handler = new Handler();
-//        var mWebview: BaseWebView
 
         var bPushEnable = false
         var bAdEnable = false
 
         init {
-            mWebView = webview
+            mWebView = webView
         }
 
         @JavascriptInterface

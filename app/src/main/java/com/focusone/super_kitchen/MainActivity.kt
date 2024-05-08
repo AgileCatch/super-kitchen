@@ -15,6 +15,7 @@ import android.view.KeyEvent
 import android.webkit.ValueCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.focusone.super_kitchen.databinding.ActivityMainBinding
+import com.focusone.super_kitchen.util.BackPressedForFinish
 import com.google.zxing.client.android.Intents
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
@@ -86,6 +87,7 @@ open class MainActivity : AppCompatActivity() {
         mainWebView.loadUrl(baseUrl)
         Log.d(TAG, "MAIN_URL: ${BuildConfig.MAIN_URL}")
     }
+
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean = with(binding) {
         if (keyCode == KeyEvent.KEYCODE_BACK && mainWebView != null && mainWebView.canGoBack()) {
@@ -184,52 +186,6 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun permissionMedia() {
-        TedPermission.create()
-            .setRationaleMessage("이 기능을 사용하기 위해서는 권한 허용이 필요합니다.")
-            .setDeniedMessage(R.string.string_common_media_alert)
-            .setPermissions(*UPLOAD_PERMISSIONS)
-            .setPermissionListener(object : PermissionListener {
-                override fun onPermissionGranted() {
-                    //이미 권한이 있거나 사용자가 권한을 허용했을 때 호출
-                    requestPermissions(
-                        arrayOf(*UPLOAD_PERMISSIONS),
-                        REQUEST_CODE_MEDIA
-                    )
-
-                }
-
-                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    //요청이 거부 되었을 때 호출
-                }
-            }).check()
-
-    }
-
-    private fun permissionCamera() {
-        TedPermission.create()
-            .setRationaleMessage("이 기능을 사용하기 위해서는 권한 허용이 필요합니다.")
-            .setDeniedMessage(R.string.string_common_camera_alert)
-            .setPermissions(Manifest.permission.CAMERA)
-            .setPermissionListener(object : PermissionListener {
-                override fun onPermissionGranted() {
-                    //이미 권한이 있거나 사용자가 권한을 허용했을 때 호출
-                    if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(
-                            arrayOf(Manifest.permission.CAMERA),
-                            REQUEST_CODE_CAMERA
-                        )
-                        Handler().post { mBarcodeLauncher.launch(ScanOptions()) }//바코드 실행
-                    }
-                }
-
-                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    //요청이 거부 되었을 때 호출
-                }
-            }).check()
-
-    }
-
     private fun fileChooserResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK) {
             if (mUploadMessage == null && mUploadMessages == null) {
@@ -274,6 +230,52 @@ open class MainActivity : AppCompatActivity() {
             // resultCode != RESULT_OK 이어서 이곳에서 카메라 접근 권한을 노출 한다.
             permissionCamera()
         }
+    }
+
+    private fun permissionMedia() {
+        TedPermission.create()
+            .setRationaleMessage("이 기능을 사용하기 위해서는 권한 허용이 필요합니다.")
+            .setDeniedMessage(R.string.string_common_media_alert)
+            .setPermissions(*UPLOAD_PERMISSIONS)
+            .setPermissionListener(object : PermissionListener {
+                override fun onPermissionGranted() {
+                    //이미 권한이 있거나 사용자가 권한을 허용했을 때 호출
+                    requestPermissions(
+                        arrayOf(*UPLOAD_PERMISSIONS),
+                        REQUEST_CODE_MEDIA
+                    )
+
+                }
+
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    //요청이 거부 되었을 때 호출
+                }
+            }).check()
+
+    }
+
+    private fun permissionCamera() {
+        TedPermission.create()
+            .setRationaleMessage("이 기능을 사용하기 위해서는 권한 허용이 필요합니다.")
+            .setDeniedMessage(R.string.string_common_camera_alert)
+            .setPermissions(Manifest.permission.CAMERA)
+            .setPermissionListener(object : PermissionListener {
+                override fun onPermissionGranted() {
+                    //이미 권한이 있거나 사용자가 권한을 허용했을 때 호출
+                    if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(
+                            arrayOf(Manifest.permission.CAMERA),
+                            REQUEST_CODE_CAMERA
+                        )
+                        Handler().post { mBarcodeLauncher.launch(ScanOptions()) }//바코드 실행
+                    }
+                }
+
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    //요청이 거부 되었을 때 호출
+                }
+            }).check()
+
     }
 
 }

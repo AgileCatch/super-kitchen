@@ -1,4 +1,4 @@
-package com.focusone.super_kitchen
+package com.focusone.super_kitchen.util
 
 import android.app.Activity
 import android.widget.Toast
