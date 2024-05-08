@@ -1,10 +1,8 @@
 package com.focusone.super_kitchen
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -27,10 +25,13 @@ import com.journeyapps.barcodescanner.ScanOptions
 import java.net.URISyntaxException
 
 open class BaseWebView : WebView {
+//    var mCallMethod = ""
+
     companion object {
         private const val TAG = "BaseWebView"
         var mContext: Context? = null
         var mCallMethod = ""
+        lateinit var mWebView: BaseWebView
 
     }
 
@@ -65,6 +66,9 @@ open class BaseWebView : WebView {
             loadWithOverviewMode = true
             javaScriptCanOpenWindowsAutomatically = true
             domStorageEnabled = true
+            setSupportZoom(true)
+            setSupportMultipleWindows(true)
+
 
             // user-agent에 ",hazzys@LF" 등을 추가 하여 Web 에서 App 인지를 판단 하게 한다.
             setUserAgent(webSettings)
@@ -73,6 +77,7 @@ open class BaseWebView : WebView {
             mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
             // 시스템 텍스트 크기 무시
             textZoom = 100
+
         }
 
         // 서드파티 쿠키 허용.
@@ -82,6 +87,7 @@ open class BaseWebView : WebView {
 
         // App <----> Javascript 통신객체 생성
         addJavascriptInterface(AndroidScriptBridge(this), "skscms")
+
         // WebViewClient 설정
         webViewClient = MyWebViewClient()
         // WebChromeClient 설정
@@ -266,7 +272,6 @@ open class BaseWebView : WebView {
             window.goBack()
         }
 
-
         //웹뷰 alert 네이티브 팝업처리
         override fun onJsAlert(
             view: WebView?,
@@ -349,36 +354,17 @@ open class BaseWebView : WebView {
         }
     }
 
-    fun normalConfirmDlg(
-        msg: String?,
-        title: String?,
-        positiveBtnName: String?,
-        positiveListener: DialogInterface.OnClickListener?,
-        negativeBtnName: String?,
-        negativeListener: DialogInterface.OnClickListener?
-    ) {
-        val builder = AlertDialog.Builder(
-            mContext,
-            android.R.style.Theme_DeviceDefault_Light_Dialog
-        )
-        builder.setMessage(msg)
-            .setTitle(title)
-            .setPositiveButton(positiveBtnName, positiveListener)
-            .setNegativeButton(negativeBtnName, negativeListener)
-            .setCancelable(false) // 백버튼으로 팝업창이 닫히지 않도록 한다.
-            .show()
-    }
 
     //바코드기능
     private class AndroidScriptBridge(webview: BaseWebView) {
         //private final Handler handler = new Handler();
-        var mWebview: BaseWebView
+//        var mWebview: BaseWebView
 
         var bPushEnable = false
         var bAdEnable = false
 
         init {
-            mWebview = webview
+            mWebView = webview
         }
 
         @JavascriptInterface
@@ -386,16 +372,11 @@ open class BaseWebView : WebView {
 
             mCallMethod = callMethod
 
-            mWebview.post(Runnable {
-                Log.d(TAG, "openBarcodeScanner('$callMethod')")
+            mWebView.post(Runnable {
+                Log.e(TAG, "openBarcodeScanner('$callMethod')")
                 (mContext as MainActivity).mBarcodeLauncher.launch(ScanOptions())
             })
         }
-    }
-
-
-    override fun loadUrl(url: String) {
-        super.loadUrl(url!!)
     }
 
     private fun printToast(msg: String) {

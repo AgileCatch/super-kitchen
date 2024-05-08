@@ -1,8 +1,6 @@
 package com.focusone.super_kitchen
 
 import android.Manifest
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -12,14 +10,10 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Parcelable
 import android.provider.MediaStore
-import android.provider.Settings
 import android.util.Log
 import android.view.KeyEvent
 import android.webkit.ValueCallback
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.focusone.super_kitchen.BaseWebView.Companion.mCallMethod
-import com.focusone.super_kitchen.BaseWebView.Companion.mContext
 import com.focusone.super_kitchen.databinding.ActivityMainBinding
 import com.google.zxing.client.android.Intents
 import com.gun0912.tedpermission.PermissionListener
@@ -33,7 +27,6 @@ open class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private lateinit var backPressedForFinish: BackPressedForFinish
-    private lateinit var mWebView: BaseWebView // BaseWebView 인스턴스를 선언합니다.
 
     companion object {
         const val TAG = "MainActivity"
@@ -85,8 +78,6 @@ open class MainActivity : AppCompatActivity() {
 
         backPressedForFinish = BackPressedForFinish(this)
 
-        mWebView = BaseWebView(this)
-
         initView()
     }
 
@@ -96,24 +87,24 @@ open class MainActivity : AppCompatActivity() {
         Log.d(TAG, "MAIN_URL: ${BuildConfig.MAIN_URL}")
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK && mWebView != null && mWebView.canGoBack()) {
-            val msg = ">>>>> canGoBack: [${mWebView.url}]"
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean = with(binding) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && mainWebView != null && mainWebView.canGoBack()) {
+            val msg = ">>>>> canGoBack: [${mainWebView.url}]"
             Log.e(TAG, msg)
             val nIndex = 2
-            val historyList = mWebView.copyBackForwardList()
+            val historyList = mainWebView.copyBackForwardList()
             var mallMainUrl = ""
             val webHistoryItem = historyList.getItemAtIndex(nIndex)
             if (webHistoryItem != null) {
                 mallMainUrl = webHistoryItem.url
             }
-            if (mWebView.url.equals(mallMainUrl, ignoreCase = true)) {
+            if (mainWebView.url.equals(mallMainUrl, ignoreCase = true)) {
                 val backBtn: BackPressedForFinish = getBackPressedClass()
                 backBtn.onBackPressed()
             } else {
-                mWebView.goBack() // 뒤로가기
+                mainWebView.goBack() // 뒤로가기
             }
-        } else if (keyCode == KeyEvent.KEYCODE_BACK && !mWebView.canGoBack()) {
+        } else if (keyCode == KeyEvent.KEYCODE_BACK && !mainWebView.canGoBack()) {
             val backBtn: BackPressedForFinish = getBackPressedClass()
             backBtn.onBackPressed()
         } else {
@@ -128,21 +119,21 @@ open class MainActivity : AppCompatActivity() {
     }
 
 
-    val mBarcodeLauncher =
-        registerForActivityResult(ScanContract()) { result ->
-            result?.let {
-                val originalIntent = result.originalIntent
-                originalIntent?.let {
-                    if (originalIntent.hasExtra(Intents.Scan.MISSING_CAMERA_PERMISSION)) {
-                        permissionCamera()
-                    } else if (result.contents != null) {
-                        Log.e(TAG, "Barcode : ${result.contents}")
-                        mWebView.loadUrl("javascript:${mCallMethod}('${result.contents}')")
-                    }
+    val mBarcodeLauncher = registerForActivityResult<ScanOptions, ScanIntentResult>(ScanContract()) { result: ScanIntentResult? ->
+        Log.e(TAG, "Barcode Scanner Callback is called with result: $result")
+        if (result != null) {
+            val originalIntent = result.originalIntent
+            if (originalIntent != null) {
+                if (originalIntent.hasExtra(Intents.Scan.MISSING_CAMERA_PERMISSION)) {
+                    permissionCamera()
+                } else if (result.contents != null) {
+                    Log.e(TAG, "Barcode : " + result.contents)
+                    Log.e(TAG, "CallMethod : " + BaseWebView.mCallMethod)
+                    binding.mainWebView.loadUrl("javascript:" + BaseWebView.mCallMethod + "('" + result.contents + "')")
                 }
             }
         }
-
+    }
 
 
     fun doFileAttach(uploadMsg: ValueCallback<Uri?>) {
