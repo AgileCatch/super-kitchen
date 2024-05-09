@@ -84,7 +84,7 @@ open class MainActivity : AppCompatActivity() {
 
     private fun initView() = with(binding) {
         var baseUrl = BuildConfig.MAIN_URL
-        mainWebView.loadUrl("http://www.naver.com/")
+        mainWebView.loadUrl(baseUrl)
         Log.d(TAG, "MAIN_URL: ${BuildConfig.MAIN_URL}")
     }
 
