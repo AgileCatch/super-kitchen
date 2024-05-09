@@ -64,7 +64,7 @@ open class BaseWebView : WebView {
             javaScriptCanOpenWindowsAutomatically = true
             loadWithOverviewMode = true //컨텐츠가 웹뷰보다 클때 스크린 크기에 맞추기
             useWideViewPort = true  // 화면 사이즈 맞추기 허용 여부
-            
+
             domStorageEnabled = true     //DOM 로컬 스토리지 사용여부
             databaseEnabled = true  //database storage API 사용 여부
             allowFileAccess = true  //파일 액세스 허용 여부

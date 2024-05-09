@@ -19,8 +19,8 @@ android {
 
     defaultConfig {
         applicationId = "com.focusone.super_kitchen"
-        minSdk = 33
-        targetSdk = 34
+        minSdk = 23
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
