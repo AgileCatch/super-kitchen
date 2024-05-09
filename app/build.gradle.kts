@@ -14,11 +14,11 @@ android {
         }
     }
 
-    namespace = "com.focusone.super_kitchen"
+    namespace = "com.focusone.skscms"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.focusone.super_kitchen"
+        applicationId = "com.focusone.skscms"
         minSdk = 23
         targetSdk = 33
         versionCode = 1

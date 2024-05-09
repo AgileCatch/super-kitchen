@@ -1,4 +1,4 @@
-package com.focusone.super_kitchen
+package com.focusone.skscms
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
@@ -21,7 +21,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import com.focusone.super_kitchen.util.CustomAlert
+import com.focusone.skscms.util.CustomAlert
 import com.journeyapps.barcodescanner.ScanOptions
 import java.net.URISyntaxException
 

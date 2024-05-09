@@ -1,4 +1,4 @@
-package com.focusone.super_kitchen
+package com.focusone.skscms
 
 import android.Manifest
 import android.content.Intent
@@ -15,7 +15,7 @@ import android.view.KeyEvent
 import android.webkit.ValueCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.focusone.super_kitchen.databinding.ActivityMainBinding
-import com.focusone.super_kitchen.util.BackPressedForFinish
+import com.focusone.skscms.util.BackPressedForFinish
 import com.google.zxing.client.android.Intents
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission

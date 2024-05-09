@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">super-kitchen</string>
+    <string name="app_name">SCMS</string>
 
     <!-- 알림 -->
     <string name="string_common_alert">알림</string>

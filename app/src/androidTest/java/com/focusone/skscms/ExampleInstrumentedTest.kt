@@ -1,4 +1,4 @@
-package com.focusone.super_kitchen
+package com.focusone.skscms
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

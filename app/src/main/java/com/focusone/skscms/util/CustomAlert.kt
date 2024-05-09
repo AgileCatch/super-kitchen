@@ -1,4 +1,4 @@
-package com.focusone.super_kitchen.util
+package com.focusone.skscms.util
 
 import android.R
 import android.app.AlertDialog
