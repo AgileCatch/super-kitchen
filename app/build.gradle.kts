@@ -4,6 +4,16 @@ plugins {
 }
 
 android {
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("/Users/gim-yeonghyeon/Documents/GitHub/super-kitchen/skapp.jks")
+            storePassword = "1q2w3e4r5t!"
+            keyPassword = "5t4r3e2w1q!"
+            keyAlias = "smcs"
+        }
+    }
+
     namespace = "com.focusone.super_kitchen"
     compileSdk = 34
 
@@ -21,17 +31,18 @@ android {
             isMinifyEnabled = true
             applicationIdSuffix = ".prod"
             versionNameSuffix = "-prod"
-            buildConfigField("String","MAIN_URL","\"https://scms.superkitchen.co.kr\"")
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            buildConfigField("String", "MAIN_URL", "\"https://scms.superkitchen.co.kr\"")
+            signingConfig = signingConfigs.getByName("release")
+                    proguardFiles(
+                        getDefaultProguardFile("proguard-android-optimize.txt"),
+                        "proguard-rules.pro"
+                    )
         }
         debug {
             isMinifyEnabled = false
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-demo"
-            buildConfigField("String","MAIN_URL","\"https://dev-scms.superkitchen.kr\"")
+            buildConfigField("String", "MAIN_URL", "\"https://dev-scms.superkitchen.kr\"")
         }
     }
     compileOptions {
@@ -62,7 +73,7 @@ dependencies {
     implementation("androidx.webkit:webkit:1.11.0")
 
     //Barcode scanner
-    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 
     //Permission
     implementation("io.github.ParkSangGwon:tedpermission-normal:3.3.0")
