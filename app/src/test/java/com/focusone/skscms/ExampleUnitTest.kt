@@ -1,4 +1,4 @@
-package com.focusone.super_kitchen
+package com.focusone.skscms
 
 import org.junit.Test
 

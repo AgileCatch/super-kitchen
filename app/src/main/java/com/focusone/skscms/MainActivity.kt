@@ -14,7 +14,7 @@ import android.util.Log
 import android.view.KeyEvent
 import android.webkit.ValueCallback
 import androidx.appcompat.app.AppCompatActivity
-import com.focusone.super_kitchen.databinding.ActivityMainBinding
+import com.focusone.skscms.databinding.ActivityMainBinding
 import com.focusone.skscms.util.BackPressedForFinish
 import com.google.zxing.client.android.Intents
 import com.gun0912.tedpermission.PermissionListener
